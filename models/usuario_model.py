@@ -18,29 +18,35 @@ class UsuarioModel:
         contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
         conexion = obtener_conexion()
         if conexion:
-            cursor = conexion.cursor()
-            sql = """INSERT INTO usuario (nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono)
-                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-            cursor.execute(sql, (nombre, apellido, nombre_usuario, correo, contrasena_hash, num_documento, telefono))
-            conexion.commit()
-            cursor.close()
-            conexion.close()
+            try:
+                cursor = conexion.cursor()
+                sql = """INSERT INTO usuario (nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono)
+                         VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+                cursor.execute(sql, (nombre, apellido, nombre_usuario, correo, contrasena_hash, num_documento, telefono))
+                conexion.commit()
+            finally:
+                cursor.close()
+                conexion.close()
 
     def actualizar(self, id, nombre, apellido, correo, telefono):
         conexion = obtener_conexion()
         if conexion:
-            cursor = conexion.cursor()
-            sql = "UPDATE usuario SET nombre=%s, apellido=%s, correo=%s, telefono=%s WHERE id=%s"
-            cursor.execute(sql, (nombre, apellido, correo, telefono, id))
-            conexion.commit()
-            cursor.close()
-            conexion.close()
+            try:
+                cursor = conexion.cursor()
+                sql = "UPDATE usuario SET nombre=%s, apellido=%s, correo=%s, telefono=%s WHERE id=%s"
+                cursor.execute(sql, (nombre, apellido, correo, telefono, id))
+                conexion.commit()
+            finally:
+                cursor.close()
+                conexion.close()
 
     def eliminar(self, id):
         conexion = obtener_conexion()
         if conexion:
-            cursor = conexion.cursor()
-            cursor.execute("DELETE FROM usuario WHERE id=%s", (id,))
-            conexion.commit()
-            cursor.close()
-            conexion.close()
+            try:
+                cursor = conexion.cursor()
+                cursor.execute("DELETE FROM usuario WHERE id=%s", (id,))
+                conexion.commit()
+            finally:
+                cursor.close()
+                conexion.close()
