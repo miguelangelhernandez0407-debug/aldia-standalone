@@ -1,3 +1,4 @@
+import re
 from models.usuario_model import UsuarioModel
 
 class UsuarioController:
@@ -11,6 +12,8 @@ class UsuarioController:
     def agregar_usuario(self, nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono):
         if not nombre or not apellido or not correo:
             return False, "Nombre, apellido y correo son obligatorios"
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", correo):
+            return False, "El formato del correo no es válido"
         try:
             self.model.insertar(nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono)
             return True, "Usuario registrado correctamente"
@@ -20,6 +23,8 @@ class UsuarioController:
     def actualizar_usuario(self, id, nombre, apellido, correo, telefono):
         if not nombre or not apellido or not correo:
             return False, "Nombre, apellido y correo son obligatorios"
+        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", correo):
+            return False, "El formato del correo no es válido"
         try:
             self.model.actualizar(id, nombre, apellido, correo, telefono)
             return True, "Usuario actualizado correctamente"
