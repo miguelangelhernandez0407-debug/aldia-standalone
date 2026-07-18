@@ -1,3 +1,4 @@
+import hashlib
 from database.connection import obtener_conexion
 
 class UsuarioModel:
@@ -14,12 +15,13 @@ class UsuarioModel:
         return usuarios
 
     def insertar(self, nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono):
+        contrasena_hash = hashlib.sha256(contrasena.encode()).hexdigest()
         conexion = obtener_conexion()
         if conexion:
             cursor = conexion.cursor()
             sql = """INSERT INTO usuario (nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono)
                      VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-            cursor.execute(sql, (nombre, apellido, nombre_usuario, correo, contrasena, num_documento, telefono))
+            cursor.execute(sql, (nombre, apellido, nombre_usuario, correo, contrasena_hash, num_documento, telefono))
             conexion.commit()
             cursor.close()
             conexion.close()
